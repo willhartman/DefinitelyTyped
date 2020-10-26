@@ -327,6 +327,33 @@ function Argv$command() {
         .argv;
 }
 
+function Argv$example() {
+    yargs
+        .command({
+            command: 'get',
+            handler: () => {
+                // command
+            },
+        })
+        .command({
+            command: 'post',
+            handler: () => {
+                // command
+            },
+        })
+        .command({
+            command: 'delete',
+            handler: () => {
+                // command
+            },
+        })
+        .example([
+            ['$0 get', 'get https://example.com/'],
+            ['$0 post', 'post https://example.com/'],
+        ])
+        .example('$0 delete', 'delete https://example.com').argv;
+}
+
 function Argv$positional() {
     const module: yargs.CommandModule<{}, { paths: string[] }> = {
         command: 'test <paths...>',
@@ -811,6 +838,8 @@ function Argv$commandObject() {
         defaultDescription: "description",
         demand: true,
         demandOption: true,
+        deprecate: true,
+        deprecated: "deprecated",
         desc: "desc",
         describe: "describe",
         description: "description",
@@ -845,6 +874,14 @@ function Argv$demandOption() {
         .demandOption(['a', 'b'])
         .demandOption(['a', 'b'], 'a and b are required')
         .demandOption(['a', 'b'], true)
+        .argv;
+}
+
+function Argv$deprecateOption() {
+    const ya = yargs
+        .option('old', {})
+        .deprecateOption('old', 'use --new')
+        .option('new', {})
         .argv;
 }
 
@@ -1239,4 +1276,15 @@ function Argv$commandsWithAsynchronousBuilders() {
 
 function makeSingleton() {
     yargsSingleton(process.argv.slice(2));
+}
+
+function Argv$strictOptions() {
+    // test taken from https://github.com/yargs/yargs/blob/master/test/validation.cjs#L1036
+    const argv1 = yargs
+    .command('foo', 'foo command')
+    .option('a', {
+        describe: 'a is for option'
+    })
+    .strictOptions()
+    .argv;
 }
